@@ -15,11 +15,10 @@ public class PPMImage {
 
 
     public short[][] makeGrey(String filename) {
-        short[][] a = {};
+        short[][] a= new short[getHeight()][getWidth()];
         if(!filename.equals(null)) {
             try {
                 BufferedWriter out = new BufferedWriter(new FileWriter(filename));
-
                 setTypeOfFile("P2");
                 out.write( getTypeOfFile()+ "\n");
                 out.write(getWidth() + " " + getHeight()+"\n");
@@ -27,15 +26,18 @@ public class PPMImage {
                 byte counter = 0;
                 for (int i = 0; i < getHeight(); i++) {
                     for (int j = 0; j < getWidth(); j++) {
-                        for (int k = 0; k < 3; k++)
-                            {
-                                out.write(getPixels()[i][j][k] + " ");
-                                out.flush();
-                                if (counter == 15) {
-                                    out.write("\n");
-                                    counter = 0;
-                                }
+                        for (int k = 0; k <3; k++)
+                        {
+                            //  System.out.println(getPixels()[i][j][k]);
+                                //out.write(getPixels()[i][j][k] +" ");
+                                a[i][j] = (short)Math.round((getPixels()[i][j][0]+getPixels()[i][j][1]+getPixels()[i][j][2])/3.0);
                             }
+                            out.write(a[i][j]+ " ");
+                        counter++;
+                        if (counter == 15) {
+                            out.write("\n");
+                            counter = 0;
+                        }
                     }
                 }
                 out.write("\n");
@@ -43,17 +45,8 @@ public class PPMImage {
 
             } catch (IOException e) {
                 e.printStackTrace();
-
             }
 
-        } else {
-            for(int i = 0;i<getHeight();i++) {
-                for (int j = 0;j<getWidth();j++) {
-                    for (int k = 0;k<3;k++) {
-                        a[i][j] = getPixels()[i][j][k];
-                    }
-                }
-                    }
         }
       return a;
 
@@ -66,15 +59,17 @@ public PPMImage(String fileName)  {
         width = scanner.nextInt();
         height = scanner.nextInt();
         maxShade = scanner.nextInt();
-        pixels = new short[height][width][maxShade];
+        pixels = new short[height][width][3];
+        while (scanner.hasNextShort()) {
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                for (int k = 0; k <3; k++) {
+                for (int k = 0; k < 3; k++) {
                     pixels[i][j][k] = scanner.nextShort();
                 }
-
             }
         }
+        }
+
     }catch (IOException e) {
         System.out.println("File not found");
         typeOfFile = "P3";

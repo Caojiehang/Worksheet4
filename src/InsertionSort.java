@@ -7,15 +7,15 @@ import java.util.List;
 * @Date: 4:06 PM 2018/10/27
 */
 public class InsertionSort {
-      public static void main(String[] args) {
-          /**
-           * test for insertion sort.
-           */
-          int[] a = {4,6,1,3,2,8,7};
-          for(int  b:insertionSort(a)) {
-              System.out.print(b+",");
-          }
-      }
+//      public static void main(String[] args) {
+//          /**
+//           * test for insertion sort.
+//           */
+//          int[] a = {4,6,1,3,2,8,7};
+//          for(int  b:insertionSort(a)) {
+//              System.out.print(b+",");
+//          }
+//      }
 
     /***
      * implements for insertion sort

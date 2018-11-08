@@ -1,12 +1,13 @@
 import java.io.*;
 import java.util.Scanner;
+import java.util.Arrays;
 
 /**
  *  The class creates an image in form of a greyscale image which is
  *  read in from a file. It contains a method to crop the left upper
  *  half of the picture and write it out again.
  *
- *  @version 2018-08-20
+ *  @version 2018-08-24
  *  @author Manfred Kerber
  */
 public class PGMImage{
@@ -46,11 +47,11 @@ public class PGMImage{
             maxShade = s.nextInt();
             //We initialize and read in the different pixels.
             pixels = new short[height][width];
-            for (int i=0; i<height; i++){
-                for (int j=0; j<width; j++) {
-                    pixels[i][j] = s.nextShort();
+                for (int i = 0; i < height; i++) {
+                    for (int j = 0; j < width; j++) {
+                        pixels[i][j] = s.nextShort();
+                    }
                 }
-            }
         }
         catch (IOException e){
             //If the file is not found, an error message is printed,
@@ -124,7 +125,7 @@ public class PGMImage{
 		for (int j=0; j<getWidth()/2; j++){
 		    out.write(getPixels()[i][j] + " ");
 		    counter++;
-		    if (counter == 15){
+		    if (counter == 15){		 
                         out.write("\n");
                         counter = 0;
                     }
@@ -140,12 +141,70 @@ public class PGMImage{
         }
     }
 
-
-    /*
-     * An example.
+    /**
+     *  The method inverts the grey scale in a picture so that dark
+     *  goes to bright and vice versa
+     *  @param filename The filename of the file in which the inverted
+     *  image should be saved.
      */
+    public void invert (String filename){
+	try {
+	    BufferedWriter out = 
+		new BufferedWriter(new FileWriter(filename));
+	    // We write the file type to out.
+	    out.write(getTypeOfFile() + "\n");
+
+	    // We write the dimensions to out.
+	    out.write((getWidth()) + " " + (getHeight()) +"\n");
+	    
+	    // We write maximal number.
+	    out.write(getMaxShade() + "\n");
+	    
+	    byte counter = 0;
+	    for (int i=0; i<getHeight(); i++){
+		for (int j=0; j<getWidth(); j++){
+		    out.write((255-getPixels()[i][j]) + " ");
+		    counter++;
+		    if (counter == 15){		 
+                        out.write("\n");
+                        counter = 0;
+                    }
+		}
+	    }
+	    out.write("\n");
+	    // We close the file.
+	    out.close();
+	}
+	catch (IOException e){
+            //Errors are caught.
+            System.out.println("File not found.");
+        }
+    }
+    /**
+     *  @param secondGreyScaleImage The other image to which the image is compared to.
+     *  @return true if and only if the two images agree in width,
+     *  height, maxShade, typeOfFile, and their two-dimensional
+     *  arrays.
+     */
+    public boolean equals(PGMImage secondGreyScaleImage) {
+        boolean result = (this.getWidth() == secondGreyScaleImage.getWidth()) &&
+            (this.getHeight() == secondGreyScaleImage.getHeight()) &&
+            (this.getMaxShade() == secondGreyScaleImage.getMaxShade()) &&
+            this.getTypeOfFile().equals(secondGreyScaleImage.getTypeOfFile());
+        /*
+         *  Note that we cannot directly apply Arrays.equals to
+         *  two-dimensional arrays, since the method works as expected
+         *  only for one-dimensional arrays, hence we must loop over
+         *  the one-dimensional sub-arrays.
+         */
+        for (int i = 0; i < this.getHeight(); i++) {
+            result = result && Arrays.equals(this.getPixels()[i],secondGreyScaleImage.getPixels()[i]);
+        }
+        return result;
+    }
+
+
     public static void main(String[] args) {
-        PGMImage cs = new PGMImage("/pic/ComputerScience.pgm");
-       // cs.crop("/pic/ComputerScienceCrop.pgm");
+        PGMImage pgmImage = new PGMImage("/pic/test1.pgm");
     }
 }
